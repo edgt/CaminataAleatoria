@@ -19,7 +19,7 @@ import jxl.read.biff.BiffException;
  */
 public class Principal extends javax.swing.JFrame {
     int n,it;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
-    DefaultTableModel modelo,weiner;
+    DefaultTableModel modelo,weiner,caminata;
 
     /**
      * Creates new form Principal
@@ -133,6 +133,32 @@ public class Principal extends javax.swing.JFrame {
         jPanel3.setVisible(true);
         jPanel4.setVisible(true);
     }
+    public void caminataAleatoria(){
+        double r1[]= new double [n];
+        double r2[]= new double [n];
+        double z[]= new double [n];
+        double x[]= new double [n];
+        int fila=0;
+        for(int i=0;i<n;i++){
+            r1[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
+            r2[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
+            z[i]=(double) Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
+            x[i]=(double) Math.rint((10+112*z[i])*10000)/10000;
+        }
+        String []titulos={"#","R1","R2","Z","X"};
+        String [] registros=new String [5];
+        caminata = new DefaultTableModel(null,titulos);
+        while(fila<n){
+                registros[0]=String.valueOf(fila+1);
+                registros[1]=String.valueOf(r1[fila]);
+                registros[2]=String.valueOf(r2[fila]);
+                registros[3]=String.valueOf(z[fila]);
+                registros[4]=String.valueOf(x[fila]);
+                caminata.addRow(registros);
+                fila++;
+            }
+            jtbCaminata.setModel(caminata);
+    }
     public void procesosWiener(){
         float paso,ten,vol,precio,cambio,nvalor;
         paso=1/it;
@@ -162,6 +188,8 @@ public class Principal extends javax.swing.JFrame {
         btnCalcular = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jtbCaminata = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtTendencia = new javax.swing.JTextField();
@@ -309,15 +337,34 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "CAMINATA ALEATORIA"));
 
+        jtbCaminata.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jtbCaminata);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 307, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "TRAYECTORIAS WIENER"));
@@ -506,7 +553,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         // TODO add your handling code here:
         quitarFocoDatos();        
-        verificarIteraciones();
+        verificarIteraciones();        
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     /**
@@ -565,7 +612,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jtbCaminata;
     private javax.swing.JTable tblDatos;
     private javax.swing.JButton txtCancelar;
     private javax.swing.JTextField txtIteraciones;
