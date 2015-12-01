@@ -20,6 +20,7 @@ import jxl.read.biff.BiffException;
 public class Principal extends javax.swing.JFrame {
     int n,it;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
     DefaultTableModel modelo,weiner,caminata;
+    double z[]= new double [n];
 
     /**
      * Creates new form Principal
@@ -62,8 +63,11 @@ public class Principal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null,"INGRESE UN VALOR DIFERENTE DE CERO","ADVERTENCIA",JOptionPane.WARNING_MESSAGE);
                 txtNumeroIteraciones.setText("");
                 txtNumeroIteraciones.requestFocus();
-            }else
+            }else{
                 habilitarPaneles();
+                caminataAleatoria();
+                procesosWiener();
+            }
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(null,"EL CAMPO: NÚMERO DE ITERACIONES ESTÁ VACÍO O "
                     + "\nEL VALOR INTRODUCIDO NO ES UN NÚMERO VÁLIDO","ERROR",JOptionPane.ERROR_MESSAGE);
@@ -135,8 +139,7 @@ public class Principal extends javax.swing.JFrame {
     }
     public void caminataAleatoria(){
         double r1[]= new double [n];
-        double r2[]= new double [n];
-        double z[]= new double [n];
+        double r2[]= new double [n];        
         double x[]= new double [n];
         int fila=0;
         for(int i=0;i<n;i++){
@@ -160,11 +163,39 @@ public class Principal extends javax.swing.JFrame {
             jtbCaminata.setModel(caminata);
     }
     public void procesosWiener(){
+        int fila=0;
         float paso,ten,vol,precio,cambio,nvalor;
+        double prec[]=new double[n];
+        double camb[]=new double[n];
+        double nuevalor[]=new double[n];
         paso=1/it;
         precio=Float.valueOf(String.valueOf(modelo.getValueAt(modelo.getRowCount()-1,1)));
+        //ten=Float.valueOf(String.valueOf(txtMedia.getText()));
+        //vol=Float.valueOf(String.valueOf(txtDesviacion.getText()));
+        txtTendencia.setText(String.valueOf(ten));
+        txtVolatilidad.setText(String.valueOf(vol));
         txtIteraciones.setText(String.valueOf(it));
         txtPaso.setText(String.valueOf(paso));
+        for(int i=0;i<n;i++){
+            if(i==0){
+                prec[i]=precio;                
+            }else{
+                prec[i]=nuevalor[i-1];                
+            }
+            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z[i]);
+            nuevalor[i]=prec[i]+camb[i];            
+        }
+        String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
+        String [] registros=new String [3];
+        weiner = new DefaultTableModel(null,titulos);
+        while(fila<n){
+                registros[0]=String.valueOf(prec[fila]);
+                registros[1]=String.valueOf(camb[fila]);
+                registros[2]=String.valueOf(nuevalor[fila]);                
+                weiner.addRow(registros);
+                fila++;
+            }
+            tblTrayectorias.setModel(weiner);       
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -200,7 +231,7 @@ public class Principal extends javax.swing.JFrame {
         txtPaso = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblTrayectorias = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -385,7 +416,7 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel6.setText("Paso:");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTrayectorias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -396,7 +427,7 @@ public class Principal extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(tblTrayectorias);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -613,9 +644,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jtbCaminata;
     private javax.swing.JTable tblDatos;
+    private javax.swing.JTable tblTrayectorias;
     private javax.swing.JButton txtCancelar;
     private javax.swing.JTextField txtIteraciones;
     private javax.swing.JTextField txtNumeroDatos;
