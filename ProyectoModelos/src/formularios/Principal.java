@@ -172,8 +172,8 @@ public class Principal extends javax.swing.JFrame {
         precio=Float.valueOf(String.valueOf(modelo.getValueAt(modelo.getRowCount()-1,1)));
         //ten=Float.valueOf(String.valueOf(txtMedia.getText()));
         //vol=Float.valueOf(String.valueOf(txtDesviacion.getText()));
-        txtTendencia.setText(String.valueOf(ten));
-        txtVolatilidad.setText(String.valueOf(vol));
+//        txtTendencia.setText(String.valueOf(ten));
+//        txtVolatilidad.setText(String.valueOf(vol));
         txtIteraciones.setText(String.valueOf(it));
         txtPaso.setText(String.valueOf(paso));
         for(int i=0;i<n;i++){
@@ -182,7 +182,7 @@ public class Principal extends javax.swing.JFrame {
             }else{
                 prec[i]=nuevalor[i-1];                
             }
-            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z[i]);
+//            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z[i]);
             nuevalor[i]=prec[i]+camb[i];            
         }
         String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
