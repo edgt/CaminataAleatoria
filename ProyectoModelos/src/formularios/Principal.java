@@ -157,7 +157,6 @@ public class Principal extends javax.swing.JFrame {
         double []reg=new double[n];
         for(int i=0;i<n;i++){
             reg[i]=Double.parseDouble((String) tblDatos.getValueAt(i,1));
-            System.out.println(reg[i]);
         }
         return reg;
         
@@ -165,10 +164,9 @@ public class Principal extends javax.swing.JFrame {
     public void Mediana(double vector[]) {
         double valor;
         double Mediana;
-        System.out.println("num "+obtenerDatos().length);
-        for(int i=0;i<obtenerDatos().length;i++) {
-            for(int j=0;j<(obtenerDatos().length)-i;j++) {
-                if (vector[i]>vector[j+1]) {
+        for(int i=1;i<obtenerDatos().length;i++) {
+            for(int j=0;j<(obtenerDatos().length)-1;j++) {
+                if (vector[j]>vector[j+1]) {
                     double aux;
                     aux=vector[j];
                     vector[j]=vector[j+1];
@@ -176,63 +174,43 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
-        for(int i=0;i<n-1;i++) {
-        System.out.println("ORD "+vector[i]);
-        }
         int numDatos=n-1;
         if(n%2==0){
-            valor=Math.rint(vector[numDatos/2]+vector[(numDatos/2)+1]);
+            valor=(Math.rint(vector[(vector.length/2)-1]+vector[(vector.length/2)]))/2;
         }
         else{
-            valor=Math.rint(vector[(n/2)+1]);
+            valor=Math.rint(vector[(vector.length-1)/2]);
         }
-        Mediana=valor/2;
-        System.out.println("MEdiana"+Mediana+n);
-        lista=new DefaultListModel();
-        lista.insertElementAt(Mediana,2);
-        lstEstadisticaDescriptiva.setModel(lista);
+        Mediana=valor;
+        txtMediana.setText(String.valueOf(Mediana));
     }
     public void Moda(double vector[]) {
     int [] numRepetidos=new int [n];  
     int contador=0;
     int mayor=0;
     int posicion = 0;
-    double Moda;
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<n;j++) {
-                if (vector[i]==vector[j]) {
-                    contador+=1;
-                }
-                numRepetidos[i]=contador;
-                contador=0;
+    double Moda=-1;
+    int frecuenciaTemp, frecuenciaModa = 0; 
+        
+        for (int i=0; i < vector.length-1; i++){
+            frecuenciaTemp = 1;
+            for(int j = i+1 ; j< vector.length; j++){
+                if(vector[i] == vector[j])
+                    frecuenciaTemp ++;                
+            }
+            if(frecuenciaTemp > frecuenciaModa){
+                frecuenciaModa = frecuenciaTemp;
+                Moda = vector[i];
             }
         }
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<n-i;j++) {
-                if (numRepetidos[i]==numRepetidos[j+1]) {
-                    Moda=0;
-                    break;
-                }
-                else{
-                    if (numRepetidos[i]>numRepetidos[j+1]) {
-                        mayor=numRepetidos[i];
-                        posicion=i;
-                    }
-                    numRepetidos[i]=contador;
-                    contador=0;
-                }
-            }
-        }
-        Moda=vector[posicion];
-        lista=new DefaultListModel();
-        lista.insertElementAt(Moda,3);
-        lstEstadisticaDescriptiva.setModel(lista);
+        txtModa.setText(String.valueOf(Moda));
+
     }
     public void EstadisticaDescriptiva(){
         Mediana(obtenerDatos());
 //        Varianza();
-//        Moda(obtenerDatos());
-//        rango();
+        Moda(obtenerDatos());
+        rango();
     }
     public void Varianza(){
        double suma=0;
@@ -251,12 +229,12 @@ public class Principal extends javax.swing.JFrame {
             suma=suma+vector[i];
         }
        Media=suma/n;
-       for(int i=0;i<n;i++){
+       for(int i=0;i<vector.length;i++){
            sumaVarianza=sumaVarianza+(vector[i]-Media);
        }
        varianza=sumaVarianza/n-1;
        desviacionEstandar=Math.sqrt(varianza);
-       for(int i=0;i<n;i++){
+       for(int i=0;i<vector.length;i++){
            sumaSesgo=sumaSesgo + Math.pow((vector[i]-Media)/varianza,3);
        }
        Sesgo=(n/((n-1)*(n-2)))*sumaSesgo;
@@ -265,7 +243,6 @@ public class Principal extends javax.swing.JFrame {
        }
        Curtosis=((n*(n+1))/((n-1)*(n-2)*(n-3)))*sumaCurtosis*((3*Math.pow(n-1,2))/((n-2)*(n-3)));
        errorTipico=desviacionEstandar/Math.sqrt(n);
-       System.out.println("MEdia "+Media+" "+n);
        lista=new DefaultListModel();
        lista.insertElementAt(Media,0);
        lista.insertElementAt(errorTipico,1);
@@ -275,35 +252,30 @@ public class Principal extends javax.swing.JFrame {
        lista.insertElementAt(Sesgo,7);
        lista.insertElementAt(suma,11);
        lista.insertElementAt(n,12);
-       lstEstadisticaDescriptiva.setModel(lista);
     }
     public void rango(){
     double mayor=0;
-    double menor=0;
+    double menor=99999;
     double rango=0;
     double maximo;
     double minimo;
     double vector[]= new double [n];
     vector=obtenerDatos();    
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<n-i;j++) {
-                    if (vector[i]>vector[j+1]) {
-                        mayor=vector[i];
+            for(int j=0;j<vector.length;j++) {
+                    if (vector[j]>mayor) {
+                        mayor=vector[j];
                     }
-                    if (vector[i]<vector[j+1]) {
-                        menor=vector[i];
+                    if (vector[j]<menor) {
+                        menor=vector[j];
                     }
-                
-            }
+                          
         }  
         rango=mayor-menor;
         maximo=mayor;
         minimo=menor;
-        lista=new DefaultListModel();
-        lista.insertElementAt(rango,8);
-        lista.insertElementAt(minimo,9);
-        lista.insertElementAt(maximo,10);
-        lstEstadisticaDescriptiva.setModel(lista);
+        txtRango.setText(String.valueOf(rango));
+        txtMin.setText(String.valueOf(minimo));
+        txtMax.setText(String.valueOf(maximo));
     }
     public void caminataAleatoria(){
         double r1[]= new double [n];
@@ -388,10 +360,32 @@ public class Principal extends javax.swing.JFrame {
         txtNumeroIteraciones = new javax.swing.JTextField();
         btnCalcular = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        lstEstadisticaDescriptiva = new javax.swing.JList<>();
+        txtMedia = new javax.swing.JTextField();
+        txtError = new javax.swing.JTextField();
+        txtMediana = new javax.swing.JTextField();
+        txtModa = new javax.swing.JTextField();
+        txtDEsviacion = new javax.swing.JTextField();
+        txtVarianza = new javax.swing.JTextField();
+        txtCurtosis = new javax.swing.JTextField();
+        txtSesgo = new javax.swing.JTextField();
+        txtRango = new javax.swing.JTextField();
+        txtMin = new javax.swing.JTextField();
+        txtMax = new javax.swing.JTextField();
+        txtSuma = new javax.swing.JTextField();
+        txtCuenta = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jtbCaminata = new javax.swing.JTable();
@@ -529,41 +523,133 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "ESTADISTICA DESCRIPTIVA"));
 
-        jList1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Media", "Error típico", "Mediana", "Moda", "Desviación estándar", "Varianza de la muestra", "Curtosis", "Coeficiente de asimetría", "Rango", "Mínimo", "Máximo", "Suma", "Cuenta", " " };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        txtError.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtErrorActionPerformed(evt);
+            }
         });
-        jScrollPane4.setViewportView(jList1);
 
-        lstEstadisticaDescriptiva.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        lstEstadisticaDescriptiva.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane5.setViewportView(lstEstadisticaDescriptiva);
+        jLabel7.setText("Media");
+
+        jLabel8.setText("Error Tipico");
+
+        jLabel9.setText("Mediana");
+
+        jLabel10.setText("Moda");
+
+        jLabel11.setText("Desviacion Estandar");
+
+        jLabel12.setText("Varianza de la Muestra");
+
+        jLabel13.setText("Curtosis");
+
+        jLabel14.setText("Coeficiente de Asimetria");
+
+        jLabel15.setText("Rango");
+
+        jLabel16.setText("Mínimo");
+
+        jLabel17.setText("Máximo");
+
+        jLabel18.setText("Suma");
+
+        jLabel19.setText("Cuenta");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addGap(91, 91, 91)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtModa)
+                    .addComponent(txtError)
+                    .addComponent(txtMedia, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtMediana)
+                    .addComponent(txtDEsviacion)
+                    .addComponent(txtVarianza)
+                    .addComponent(txtCurtosis)
+                    .addComponent(txtSesgo)
+                    .addComponent(txtRango)
+                    .addComponent(txtMin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                    .addComponent(txtMax)
+                    .addComponent(txtSuma)
+                    .addComponent(txtCuenta))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane4)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMedia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtError)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMediana)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtModa)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtDEsviacion)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtVarianza)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCurtosis)
+                    .addComponent(jLabel13))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSesgo)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtRango)
+                    .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMin)
+                    .addComponent(jLabel16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMax)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtSuma)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel18)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCuenta)
+                    .addComponent(jLabel19))
+                .addGap(143, 143, 143))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "CAMINATA ALEATORIA"));
@@ -587,7 +673,7 @@ public class Principal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -714,9 +800,9 @@ public class Principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(2, 2, 2)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -785,9 +871,12 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
         quitarFocoDatos();        
         verificarIteraciones();
-        lstEstadisticaDescriptiva.removeAll();
         EstadisticaDescriptiva();
     }//GEN-LAST:event_btnCalcularActionPerformed
+
+    private void txtErrorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtErrorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtErrorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -829,12 +918,24 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnCalcular;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -847,18 +948,28 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jtbCaminata;
-    private javax.swing.JList<String> lstEstadisticaDescriptiva;
     private javax.swing.JTable tblDatos;
     private javax.swing.JTable tblTrayectorias;
     private javax.swing.JButton txtCancelar;
+    private javax.swing.JTextField txtCuenta;
+    private javax.swing.JTextField txtCurtosis;
+    private javax.swing.JTextField txtDEsviacion;
+    private javax.swing.JTextField txtError;
     private javax.swing.JTextField txtIteraciones;
+    private javax.swing.JTextField txtMax;
+    private javax.swing.JTextField txtMedia;
+    private javax.swing.JTextField txtMediana;
+    private javax.swing.JTextField txtMin;
+    private javax.swing.JTextField txtModa;
     private static javax.swing.JTextField txtNumeroDatos;
     private javax.swing.JTextField txtNumeroIteraciones;
     private javax.swing.JTextField txtPaso;
+    private javax.swing.JTextField txtRango;
+    private javax.swing.JTextField txtSesgo;
+    private javax.swing.JTextField txtSuma;
     private javax.swing.JTextField txtTendencia;
+    private javax.swing.JTextField txtVarianza;
     private javax.swing.JTextField txtVolatilidad;
     // End of variables declaration//GEN-END:variables
 }
