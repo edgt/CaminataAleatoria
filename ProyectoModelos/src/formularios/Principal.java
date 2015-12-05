@@ -6,10 +6,12 @@
 package formularios;
 
 import java.io.*;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import jdk.nashorn.internal.runtime.ListAdapter;
 import jxl.*;
 import jxl.read.biff.BiffException;
 
@@ -20,8 +22,9 @@ import jxl.read.biff.BiffException;
 public class Principal extends javax.swing.JFrame {
     int n,it;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
     DefaultTableModel modelo,weiner,caminata;
-    double z[]= new double [n];
-
+    DefaultListModel lista;
+    
+//    double z[]= new double [n];
     /**
      * Creates new form Principal
      */
@@ -137,10 +140,176 @@ public class Principal extends javax.swing.JFrame {
         jPanel3.setVisible(true);
         jPanel4.setVisible(true);
     }
+
+    public void numerosAleatorios(){
+        modelo=new DefaultTableModel();
+        double num[]= new double [Integer.valueOf(txtNumeroDatos.getText())+1];
+        String [] reg=new String [Integer.valueOf(txtNumeroDatos.getText())+1];
+        for(int i=0;i<n;i++){
+            num[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
+            reg[i]=String.valueOf(num[i]);
+        }
+        modelo.addColumn(reg);
+        tblDatos.setModel(modelo);
+    }
+    public double[] obtenerDatos(){
+//        int n=Integer.valueOf(txtNumeroDatos.getText());
+        double []reg=new double[n];
+        for(int i=0;i<n;i++){
+            reg[i]=Double.parseDouble((String) tblDatos.getValueAt(i,1));
+            System.out.println(reg[i]);
+        }
+        return reg;
+        
+    }    
+    public void Mediana(double vector[]) {
+        double valor;
+        double Mediana;
+        System.out.println("num "+obtenerDatos().length);
+        for(int i=0;i<obtenerDatos().length;i++) {
+            for(int j=0;j<(obtenerDatos().length)-i;j++) {
+                if (vector[i]>vector[j+1]) {
+                    double aux;
+                    aux=vector[j];
+                    vector[j]=vector[j+1];
+                    vector[j+1]=aux;
+                }
+            }
+        }
+        for(int i=0;i<n-1;i++) {
+        System.out.println("ORD "+vector[i]);
+        }
+        int numDatos=n-1;
+        if(n%2==0){
+            valor=Math.rint(vector[numDatos/2]+vector[(numDatos/2)+1]);
+        }
+        else{
+            valor=Math.rint(vector[(n/2)+1]);
+        }
+        Mediana=valor/2;
+        System.out.println("MEdiana"+Mediana+n);
+        lista=new DefaultListModel();
+        lista.insertElementAt(Mediana,2);
+        lstEstadisticaDescriptiva.setModel(lista);
+    }
+    public void Moda(double vector[]) {
+    int [] numRepetidos=new int [n];  
+    int contador=0;
+    int mayor=0;
+    int posicion = 0;
+    double Moda;
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<n;j++) {
+                if (vector[i]==vector[j]) {
+                    contador+=1;
+                }
+                numRepetidos[i]=contador;
+                contador=0;
+            }
+        }
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<n-i;j++) {
+                if (numRepetidos[i]==numRepetidos[j+1]) {
+                    Moda=0;
+                    break;
+                }
+                else{
+                    if (numRepetidos[i]>numRepetidos[j+1]) {
+                        mayor=numRepetidos[i];
+                        posicion=i;
+                    }
+                    numRepetidos[i]=contador;
+                    contador=0;
+                }
+            }
+        }
+        Moda=vector[posicion];
+        lista=new DefaultListModel();
+        lista.insertElementAt(Moda,3);
+        lstEstadisticaDescriptiva.setModel(lista);
+    }
+    public void EstadisticaDescriptiva(){
+        Mediana(obtenerDatos());
+//        Varianza();
+//        Moda(obtenerDatos());
+//        rango();
+    }
+    public void Varianza(){
+       double suma=0;
+       double Media;
+       double sumaVarianza=0;
+       double sumaCurtosis=0;
+       double sumaSesgo=0;
+       double Sesgo=0;
+       double Curtosis=0;
+       double varianza=0;
+       double desviacionEstandar;
+       double errorTipico=0;
+       double vector[]= new double [n];
+       vector=obtenerDatos();
+       for(int i=0;i<n;i++){
+            suma=suma+vector[i];
+        }
+       Media=suma/n;
+       for(int i=0;i<n;i++){
+           sumaVarianza=sumaVarianza+(vector[i]-Media);
+       }
+       varianza=sumaVarianza/n-1;
+       desviacionEstandar=Math.sqrt(varianza);
+       for(int i=0;i<n;i++){
+           sumaSesgo=sumaSesgo + Math.pow((vector[i]-Media)/varianza,3);
+       }
+       Sesgo=(n/((n-1)*(n-2)))*sumaSesgo;
+       for(int i=0;i<n;i++){
+           sumaCurtosis=sumaCurtosis+Math.pow((vector[i]-Media)/varianza,4);
+       }
+       Curtosis=((n*(n+1))/((n-1)*(n-2)*(n-3)))*sumaCurtosis*((3*Math.pow(n-1,2))/((n-2)*(n-3)));
+       errorTipico=desviacionEstandar/Math.sqrt(n);
+       System.out.println("MEdia "+Media+" "+n);
+       lista=new DefaultListModel();
+       lista.insertElementAt(Media,0);
+       lista.insertElementAt(errorTipico,1);
+       lista.insertElementAt(desviacionEstandar,4);
+       lista.insertElementAt(varianza,5);
+       lista.insertElementAt(Curtosis,6);
+       lista.insertElementAt(Sesgo,7);
+       lista.insertElementAt(suma,11);
+       lista.insertElementAt(n,12);
+       lstEstadisticaDescriptiva.setModel(lista);
+    }
+    public void rango(){
+    double mayor=0;
+    double menor=0;
+    double rango=0;
+    double maximo;
+    double minimo;
+    double vector[]= new double [n];
+    vector=obtenerDatos();    
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<n-i;j++) {
+                    if (vector[i]>vector[j+1]) {
+                        mayor=vector[i];
+                    }
+                    if (vector[i]<vector[j+1]) {
+                        menor=vector[i];
+                    }
+                
+            }
+        }  
+        rango=mayor-menor;
+        maximo=mayor;
+        minimo=menor;
+        lista=new DefaultListModel();
+        lista.insertElementAt(rango,8);
+        lista.insertElementAt(minimo,9);
+        lista.insertElementAt(maximo,10);
+        lstEstadisticaDescriptiva.setModel(lista);
+    }
     public void caminataAleatoria(){
         double r1[]= new double [n];
         double r2[]= new double [n];        
         double x[]= new double [n];
+        double z[]= new double [n];
         int fila=0;
         for(int i=0;i<n;i++){
             r1[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
@@ -148,6 +317,7 @@ public class Principal extends javax.swing.JFrame {
             z[i]=(double) Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
             x[i]=(double) Math.rint((10+112*z[i])*10000)/10000;
         }
+        
         String []titulos={"#","R1","R2","Z","X"};
         String [] registros=new String [5];
         caminata = new DefaultTableModel(null,titulos);
@@ -218,6 +388,10 @@ public class Principal extends javax.swing.JFrame {
         txtNumeroIteraciones = new javax.swing.JTextField();
         btnCalcular = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        lstEstadisticaDescriptiva = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jtbCaminata = new javax.swing.JTable();
@@ -355,15 +529,41 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "ESTADISTICA DESCRIPTIVA"));
 
+        jList1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Media", "Error típico", "Mediana", "Moda", "Desviación estándar", "Varianza de la muestra", "Curtosis", "Coeficiente de asimetría", "Rango", "Mínimo", "Máximo", "Suma", "Cuenta", " " };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane4.setViewportView(jList1);
+
+        lstEstadisticaDescriptiva.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lstEstadisticaDescriptiva.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1", "Item1" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane5.setViewportView(lstEstadisticaDescriptiva);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 260, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 257, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane4)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "CAMINATA ALEATORIA"));
@@ -387,7 +587,7 @@ public class Principal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -472,7 +672,7 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(txtPaso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -529,10 +729,10 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(421, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         pack();
@@ -584,7 +784,9 @@ public class Principal extends javax.swing.JFrame {
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         // TODO add your handling code here:
         quitarFocoDatos();        
-        verificarIteraciones();        
+        verificarIteraciones();
+        lstEstadisticaDescriptiva.removeAll();
+        EstadisticaDescriptiva();
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     /**
@@ -632,6 +834,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -644,12 +847,15 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jtbCaminata;
+    private javax.swing.JList<String> lstEstadisticaDescriptiva;
     private javax.swing.JTable tblDatos;
     private javax.swing.JTable tblTrayectorias;
     private javax.swing.JButton txtCancelar;
     private javax.swing.JTextField txtIteraciones;
-    private javax.swing.JTextField txtNumeroDatos;
+    private static javax.swing.JTextField txtNumeroDatos;
     private javax.swing.JTextField txtNumeroIteraciones;
     private javax.swing.JTextField txtPaso;
     private javax.swing.JTextField txtTendencia;
