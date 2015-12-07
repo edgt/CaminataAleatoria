@@ -288,6 +288,7 @@
                       <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -304,6 +305,7 @@
                       <Component id="txtMax" alignment="0" max="32767" attributes="0"/>
                       <Component id="txtSuma" max="32767" attributes="0"/>
                       <Component id="txtCuenta" alignment="0" max="32767" attributes="0"/>
+                      <Component id="txtPruebJB" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -380,7 +382,12 @@
                       <Component id="txtCuenta" alignment="3" max="32767" attributes="0"/>
                       <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel20" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtPruebJB" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -479,6 +486,13 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Cuenta"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel20">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="JB"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txtPruebJB">
         </Component>
       </SubComponents>
     </Container>

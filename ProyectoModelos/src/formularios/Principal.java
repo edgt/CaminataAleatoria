@@ -24,7 +24,7 @@ public class Principal extends javax.swing.JFrame {
     DefaultTableModel modelo,weiner,caminata;
     DefaultListModel lista;
     
-//    double z[]= new double [n];
+    double z[]= new double [n];
     /**
      * Creates new form Principal
      */
@@ -208,7 +208,7 @@ public class Principal extends javax.swing.JFrame {
     }
     public void EstadisticaDescriptiva(){
         Mediana(obtenerDatos());
-//        Varianza();
+        Varianza();
         Moda(obtenerDatos());
         rango();
     }
@@ -223,35 +223,38 @@ public class Principal extends javax.swing.JFrame {
        double varianza=0;
        double desviacionEstandar;
        double errorTipico=0;
+       double numero=n;
+       double JB;
        double vector[]= new double [n];
        vector=obtenerDatos();
-       for(int i=0;i<n;i++){
-            suma=suma+vector[i];
+       for(int i=0;i<obtenerDatos().length;i++){
+            suma=suma+obtenerDatos()[i];
         }
        Media=suma/n;
-       for(int i=0;i<vector.length;i++){
-           sumaVarianza=sumaVarianza+(vector[i]-Media);
+       for(int i=0;i<obtenerDatos().length;i++){
+           sumaVarianza=sumaVarianza+Math.pow(obtenerDatos()[i]-Media,2);
        }
-       varianza=sumaVarianza/n-1;
+       varianza=sumaVarianza/(n-1);
        desviacionEstandar=Math.sqrt(varianza);
-       for(int i=0;i<vector.length;i++){
-           sumaSesgo=sumaSesgo + Math.pow((vector[i]-Media)/varianza,3);
+       for(int i=0;i<obtenerDatos().length;i++){
+           sumaSesgo=sumaSesgo +Math.pow((obtenerDatos()[i]-Media)/desviacionEstandar,3);
        }
-       Sesgo=(n/((n-1)*(n-2)))*sumaSesgo;
-       for(int i=0;i<n;i++){
-           sumaCurtosis=sumaCurtosis+Math.pow((vector[i]-Media)/varianza,4);
+       Sesgo=(numero/((numero-1)*(numero-2)))*sumaSesgo;
+       for(int i=0;i<obtenerDatos().length;i++){
+           sumaCurtosis=sumaCurtosis+Math.pow((obtenerDatos()[i]-Media)/desviacionEstandar,4);
        }
-       Curtosis=((n*(n+1))/((n-1)*(n-2)*(n-3)))*sumaCurtosis*((3*Math.pow(n-1,2))/((n-2)*(n-3)));
+       Curtosis=(((numero*(numero+1))/((numero-1)*(numero-2)*(numero-3)))*sumaCurtosis)-((3*Math.pow(numero-1,2))/((numero-2)*(numero-3)));
        errorTipico=desviacionEstandar/Math.sqrt(n);
-       lista=new DefaultListModel();
-       lista.insertElementAt(Media,0);
-       lista.insertElementAt(errorTipico,1);
-       lista.insertElementAt(desviacionEstandar,4);
-       lista.insertElementAt(varianza,5);
-       lista.insertElementAt(Curtosis,6);
-       lista.insertElementAt(Sesgo,7);
-       lista.insertElementAt(suma,11);
-       lista.insertElementAt(n,12);
+       JB=numero*((Math.pow(Sesgo, 2)/6)+((Math.pow(Curtosis, 2))/24));
+       txtError.setText(String.valueOf(errorTipico));
+       txtMedia.setText(String.valueOf(Media));
+       txtCurtosis.setText(String.valueOf(Curtosis));
+       txtSesgo.setText(String.valueOf(Sesgo));
+       txtVarianza.setText(String.valueOf(varianza));
+       txtDEsviacion.setText(String.valueOf(desviacionEstandar));
+       txtSuma.setText(String.valueOf(suma));
+       txtCuenta.setText(String.valueOf(numero));
+       txtPruebJB.setText(String.valueOf(JB));
     }
     public void rango(){
     double mayor=0;
@@ -312,10 +315,10 @@ public class Principal extends javax.swing.JFrame {
         double nuevalor[]=new double[n];
         paso=1/it;
         precio=Float.valueOf(String.valueOf(modelo.getValueAt(modelo.getRowCount()-1,1)));
-        //ten=Float.valueOf(String.valueOf(txtMedia.getText()));
-        //vol=Float.valueOf(String.valueOf(txtDesviacion.getText()));
-//        txtTendencia.setText(String.valueOf(ten));
-//        txtVolatilidad.setText(String.valueOf(vol));
+        ten=Float.valueOf(String.valueOf(txtMedia.getText()));
+        vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
+        txtTendencia.setText(String.valueOf(ten));
+        txtVolatilidad.setText(String.valueOf(vol));
         txtIteraciones.setText(String.valueOf(it));
         txtPaso.setText(String.valueOf(paso));
         for(int i=0;i<n;i++){
@@ -324,7 +327,7 @@ public class Principal extends javax.swing.JFrame {
             }else{
                 prec[i]=nuevalor[i-1];                
             }
-//            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z[i]);
+            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z[i]);
             nuevalor[i]=prec[i]+camb[i];            
         }
         String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
@@ -386,6 +389,8 @@ public class Principal extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        txtPruebJB = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jtbCaminata = new javax.swing.JTable();
@@ -555,6 +560,8 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel19.setText("Cuenta");
 
+        jLabel20.setText("JB");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -574,7 +581,8 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel16)
                     .addComponent(jLabel17)
                     .addComponent(jLabel18)
-                    .addComponent(jLabel19))
+                    .addComponent(jLabel19)
+                    .addComponent(jLabel20))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtModa)
@@ -589,7 +597,8 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(txtMin, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
                     .addComponent(txtMax)
                     .addComponent(txtSuma)
-                    .addComponent(txtCuenta))
+                    .addComponent(txtCuenta)
+                    .addComponent(txtPruebJB))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -649,7 +658,11 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCuenta)
                     .addComponent(jLabel19))
-                .addGap(143, 143, 143))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(txtPruebJB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(108, 108, 108))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "CAMINATA ALEATORIA"));
@@ -929,6 +942,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -965,6 +979,7 @@ public class Principal extends javax.swing.JFrame {
     private static javax.swing.JTextField txtNumeroDatos;
     private javax.swing.JTextField txtNumeroIteraciones;
     private javax.swing.JTextField txtPaso;
+    private javax.swing.JTextField txtPruebJB;
     private javax.swing.JTextField txtRango;
     private javax.swing.JTextField txtSesgo;
     private javax.swing.JTextField txtSuma;
