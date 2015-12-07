@@ -25,6 +25,7 @@ public class Principal extends javax.swing.JFrame {
     DefaultListModel lista;
     
     double z[]= new double [n];
+    
     /**
      * Creates new form Principal
      */
@@ -169,7 +170,6 @@ public class Principal extends javax.swing.JFrame {
         return reg;   
     }    
     public double[] obtenerDatosImportados(){
-//        int n=Integer.valueOf(txtNumeroDatos.getText());
         double []reg=new double[tblDatos.getRowCount()];
         for(int i=0;i<tblDatos.getRowCount();i++){
             reg[i]=Double.parseDouble((String) tblDatos.getValueAt(i,0));
@@ -417,12 +417,12 @@ public void VarianzaImportados(){
         txtMax.setText(String.valueOf(maximo));
     }
     public void caminataAleatoria(){
-        double r1[]= new double [n];
-        double r2[]= new double [n];        
-        double x[]= new double [n];
-        double z[]= new double [n];
+        double r1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
+        double r2[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];        
+        double x[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
+        double z[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
         int fila=0;
-        for(int i=0;i<n;i++){
+        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
             r1[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
             r2[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
             z[i]=(double) Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
@@ -432,7 +432,7 @@ public void VarianzaImportados(){
         String []titulos={"#","R1","R2","Z","X"};
         String [] registros=new String [5];
         caminata = new DefaultTableModel(null,titulos);
-        while(fila<n){
+        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
                 registros[0]=String.valueOf(fila+1);
                 registros[1]=String.valueOf(r1[fila]);
                 registros[2]=String.valueOf(r2[fila]);
@@ -444,12 +444,12 @@ public void VarianzaImportados(){
             jtbCaminata.setModel(caminata);
     }
     public void caminataAleatoriaImportados(){
-        double r1[]= new double [obtenerDatosImportados().length];
-        double r2[]= new double [obtenerDatosImportados().length];        
-        double x[]= new double [obtenerDatosImportados().length];
-        double z[]= new double [obtenerDatosImportados().length];
+        double r1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
+        double r2[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];        
+        double x[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
+        double z[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
         int fila=0;
-        for(int i=0;i<obtenerDatosImportados().length;i++){
+        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
             r1[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
             r2[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
             z[i]=(double) Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
@@ -459,7 +459,7 @@ public void VarianzaImportados(){
         String []titulos={"#","R1","R2","Z","X"};
         String [] registros=new String [5];
         caminata = new DefaultTableModel(null,titulos);
-        while(fila<obtenerDatosImportados().length){
+        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
                 registros[0]=String.valueOf(fila+1);
                 registros[1]=String.valueOf(r1[fila]);
                 registros[2]=String.valueOf(r2[fila]);
@@ -473,18 +473,18 @@ public void VarianzaImportados(){
     public void procesosWiener(){
         int fila=0;
         float paso,ten,vol,precio,cambio,nvalor;
-        double prec[]=new double[n];
-        double camb[]=new double[n];
-        double nuevalor[]=new double[n];
-        paso=1/it;
-        precio=Float.valueOf(String.valueOf(modelo.getValueAt(modelo.getRowCount()-1,1)));
+        double prec[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        double camb[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        double nuevalor[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        paso=1/Float.valueOf(txtNumeroIteraciones.getText());
+        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1,1)));
         ten=Float.valueOf(String.valueOf(txtMedia.getText()));
         vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
         txtTendencia.setText(String.valueOf(ten));
         txtVolatilidad.setText(String.valueOf(vol));
         txtIteraciones.setText(String.valueOf(it));
         txtPaso.setText(String.valueOf(paso));
-        for(int i=0;i<n;i++){
+        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
             if(i==0){
                 prec[i]=precio;                
             }else{
@@ -496,7 +496,7 @@ public void VarianzaImportados(){
         String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
         String [] registros=new String [3];
         weiner = new DefaultTableModel(null,titulos);
-        while(fila<n){
+        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
                 registros[0]=String.valueOf(prec[fila]);
                 registros[1]=String.valueOf(camb[fila]);
                 registros[2]=String.valueOf(nuevalor[fila]);                
@@ -508,30 +508,33 @@ public void VarianzaImportados(){
     public void procesosWienerImportados(){
         int fila=0;
         float paso,ten,vol,precio,cambio,nvalor;
-        double prec[]=new double[obtenerDatosImportados().length];
-        double camb[]=new double[obtenerDatosImportados().length];
-        double nuevalor[]=new double[obtenerDatosImportados().length];
-        paso=1/it;
-        precio=Float.valueOf(String.valueOf(modelo.getValueAt(obtenerDatosImportados().length-1,1)));
+        double prec[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        double camb[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        double nuevalor[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        double z1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
+        paso=1/Float.valueOf(txtNumeroIteraciones.getText());
+        double paso1=1/Double.valueOf(txtNumeroIteraciones.getText());
+        System.out.println("paso "+ paso + " paso1 "+paso1 + " n "+txtNumeroIteraciones.getText());
+        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1, fila)));
         ten=Float.valueOf(String.valueOf(txtMedia.getText()));
         vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
         txtTendencia.setText(String.valueOf(ten));
         txtVolatilidad.setText(String.valueOf(vol));
         txtIteraciones.setText(String.valueOf(it));
         txtPaso.setText(String.valueOf(paso));
-        for(int i=0;i<obtenerDatosImportados().length;i++){
+        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
             if(i==0){
                 prec[i]=precio;                
             }else{
                 prec[i]=nuevalor[i-1];                
             }
-            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z[i]);
+            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z1[i]);
             nuevalor[i]=prec[i]+camb[i];            
         }
         String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
         String [] registros=new String [3];
         weiner = new DefaultTableModel(null,titulos);
-        while(fila<obtenerDatosImportados().length){
+        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
                 registros[0]=String.valueOf(prec[fila]);
                 registros[1]=String.valueOf(camb[fila]);
                 registros[2]=String.valueOf(nuevalor[fila]);                
