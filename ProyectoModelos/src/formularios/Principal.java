@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import jxl.*;
 import jxl.read.biff.BiffException;
+import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
@@ -20,11 +21,12 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @author Erick
  */
 public class Principal extends javax.swing.JFrame {
-    int n,it;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
+    int n,it,l=0;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
     DefaultTableModel modelo,weiner,caminata;
     DefaultListModel lista;    
-    double z[]= new double [n];    
-    public static XYSeriesCollection collection =new XYSeriesCollection();   
+    double z[]= new double [n];
+    public static XYSeriesCollection collection =new XYSeriesCollection();    
+    XYSeries vec[]= new XYSeries[10];
     
     /**
      * Creates new form Principal
@@ -36,6 +38,8 @@ public class Principal extends javax.swing.JFrame {
         jPanel3.setVisible(false);
         jPanel4.setVisible(false);
         setExtendedState(MAXIMIZED_BOTH);
+        btnCalcular.setVisible(false);
+        btnCalcularImpor.setVisible(false);
     }
     public void quitarFocoDatos(){
         if(tblDatos.isEditing())
@@ -52,6 +56,7 @@ public class Principal extends javax.swing.JFrame {
                 inicio();
                 jDialog1.dispose();
                 txtNumeroDatos.setText("");
+                btnCalcular.setVisible(true);
             }
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(null,"EL CAMPO: NÚMERO DE DATOS ESTÁ VACÍO O "
@@ -69,6 +74,7 @@ public class Principal extends javax.swing.JFrame {
                 txtNumeroIteraciones.requestFocus();
             }else{
                 habilitarPaneles();
+                EstadisticaDescriptiva();
                 caminataAleatoria();
                 procesosWiener();
             }
@@ -88,6 +94,7 @@ public class Principal extends javax.swing.JFrame {
                 txtNumeroIteraciones.requestFocus();
             }else{
                 habilitarPaneles();
+                EstadisticaDescriptivaImportados();
                 caminataAleatoriaImportados();
                 procesosWienerImportados();
             }
@@ -128,6 +135,7 @@ public class Principal extends javax.swing.JFrame {
         if(examinar.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
             archivo=examinar.getSelectedFile().getAbsoluteFile();
             modelo=new DefaultTableModel();
+            btnCalcularImpor.setVisible(true);
         tblDatos.setModel(modelo);
             try {
                 Workbook leer=Workbook.getWorkbook(archivo);
@@ -498,7 +506,8 @@ public class Principal extends javax.swing.JFrame {
                 weiner.addRow(registros);
                 fila++;
             }
-            tblTrayectorias.setModel(weiner);       
+            tblTrayectorias.setModel(weiner);
+            graficos(nuevalor);
     }
     public void procesosWienerImportados(){
         int fila=0;
@@ -509,7 +518,7 @@ public class Principal extends javax.swing.JFrame {
         double z1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
         paso=1/Float.valueOf(txtNumeroIteraciones.getText());
         double paso1=1/Double.valueOf(txtNumeroIteraciones.getText());        
-        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1, fila)));
+        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1,1)));
         ten=Float.valueOf(String.valueOf(txtMedia.getText()));
         vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
         txtTendencia.setText(String.valueOf(ten));
@@ -535,8 +544,23 @@ public class Principal extends javax.swing.JFrame {
                 weiner.addRow(registros);
                 fila++;
             }
-            tblTrayectorias.setModel(weiner);         
-    }    
+            tblTrayectorias.setModel(weiner);
+            graficos(nuevalor);
+    }
+    public void graficos(double vector[]){
+        int k=vector.length;
+        XYSeries serie=new XYSeries(""+l);
+        collection.removeAllSeries();
+        serie.clear();
+        for(int j=1;j<k;j++){
+            serie.add(j,vector[j-1]);
+        }
+        vec[l]=serie;
+        l++;
+        for(int p=0;p<l;p++){
+            collection.addSeries(vec[p]);
+        }        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -557,6 +581,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtNumeroIteraciones = new javax.swing.JTextField();
         btnCalcular = new javax.swing.JButton();
+        btnCalcularImpor = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         txtMedia = new javax.swing.JTextField();
         txtError = new javax.swing.JTextField();
@@ -693,6 +718,13 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        btnCalcularImpor.setText("Calcular");
+        btnCalcularImpor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalcularImporActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -704,7 +736,8 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCalcular)
                     .addComponent(jLabel2)
-                    .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalcularImpor, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -718,6 +751,8 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCalcular)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCalcularImpor)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1087,12 +1122,8 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         // TODO add your handling code here:
-        quitarFocoDatos();        
-//        verificarIteraciones();
-//        EstadisticaDescriptiva();
-        EstadisticaDescriptivaImportados();
-        verificarIteracionesImportados();
-       
+        quitarFocoDatos();
+        verificarIteraciones();       
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     private void txtErrorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtErrorActionPerformed
@@ -1104,6 +1135,12 @@ public class Principal extends javax.swing.JFrame {
         GraficoWiener g=new GraficoWiener();
         g.setVisible(true);
     }//GEN-LAST:event_btnGraficoWienerActionPerformed
+
+    private void btnCalcularImporActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularImporActionPerformed
+        // TODO add your handling code here:
+        quitarFocoDatos();
+        verificarIteracionesImportados();
+    }//GEN-LAST:event_btnCalcularImporActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1143,6 +1180,7 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCalcular;
+    private javax.swing.JButton btnCalcularImpor;
     private javax.swing.JButton btnGraficoWiener;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
@@ -1202,4 +1240,5 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtVarianza;
     private javax.swing.JTextField txtVolatilidad;
     // End of variables declaration//GEN-END:variables
+    
 }
