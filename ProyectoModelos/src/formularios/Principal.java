@@ -11,9 +11,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import jdk.nashorn.internal.runtime.ListAdapter;
 import jxl.*;
 import jxl.read.biff.BiffException;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -22,9 +22,9 @@ import jxl.read.biff.BiffException;
 public class Principal extends javax.swing.JFrame {
     int n,it;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
     DefaultTableModel modelo,weiner,caminata;
-    DefaultListModel lista;
-    
-    double z[]= new double [n];
+    DefaultListModel lista;    
+    double z[]= new double [n];    
+    public static XYSeriesCollection collection =new XYSeriesCollection();   
     
     /**
      * Creates new form Principal
@@ -541,8 +541,10 @@ public void VarianzaImportados(){
                 weiner.addRow(registros);
                 fila++;
             }
-            tblTrayectorias.setModel(weiner);       
-    }
+            tblTrayectorias.setModel(weiner);
+            GraficoWiener gw=new GraficoWiener();
+            gw.setVisible(true);
+    }    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
