@@ -161,29 +161,26 @@ public class Principal extends javax.swing.JFrame {
         jPanel4.setVisible(true);
     }
 
-    public double[] obtenerDatos(){
-//        int n=Integer.valueOf(txtNumeroDatos.getText());
-        double []reg=new double[n];
+    public float[] obtenerDatos(){
+        float[]reg=new float[n];
         for(int i=0;i<n;i++){
-            reg[i]=Double.parseDouble((String) tblDatos.getValueAt(i,1));
+            reg[i]=Float.parseFloat((String) tblDatos.getValueAt(i,1));
         }
         return reg;   
     }    
-    public double[] obtenerDatosImportados(){
-        double []reg=new double[tblDatos.getRowCount()];
+    public float[] obtenerDatosImportados(){
+        float []reg=new float[tblDatos.getRowCount()];
         for(int i=0;i<tblDatos.getRowCount();i++){
-            reg[i]=Double.parseDouble((String) tblDatos.getValueAt(i,0));
+            reg[i]=Float.valueOf((String) tblDatos.getValueAt(i,1));
         }
-        return reg;   
+        return reg;
     } 
-    public void Mediana(double vector[]) {
-        double valor;
-        double Mediana;
-        double datos;
+    public void Mediana(float vector[]) {
+        float valor,Mediana,datos;
         for(int i=1;i<obtenerDatos().length;i++) {
             for(int j=0;j<(obtenerDatos().length)-1;j++) {
                 if (vector[j]>vector[j+1]) {
-                    double aux;
+                    float aux;
                     aux=vector[j];
                     vector[j]=vector[j+1];
                     vector[j+1]=aux;
@@ -200,15 +197,13 @@ public class Principal extends javax.swing.JFrame {
         Mediana=valor;
         txtMediana.setText(String.valueOf(Mediana));
     }
-    public void MedianaImportados(double vector[]) {
-        double valor;
-        double Mediana;
-        double datos;
+    public void MedianaImportados(float vector[]) {
+        float valor,Mediana,datos;
         datos=obtenerDatosImportados().length;
         for(int i=1;i<obtenerDatosImportados().length;i++) {
             for(int j=0;j<(obtenerDatosImportados().length)-1;j++) {
                 if (vector[j]>vector[j+1]) {
-                    double aux;
+                    float aux;
                     aux=vector[j];
                     vector[j]=vector[j+1];
                     vector[j+1]=aux;
@@ -224,12 +219,12 @@ public class Principal extends javax.swing.JFrame {
         Mediana=valor;
         txtMediana.setText(String.valueOf(Mediana));
     }
-    public void Moda(double vector[]) {
+    public void Moda(float vector[]) {
     int [] numRepetidos=new int [n];  
     int contador=0;
     int mayor=0;
     int posicion = 0;
-    double Moda=-1;
+    float Moda=-1;
     int frecuenciaTemp, frecuenciaModa = 0; 
         
         for (int i=0; i < vector.length-1; i++){
@@ -246,12 +241,12 @@ public class Principal extends javax.swing.JFrame {
         txtModa.setText(String.valueOf(Moda));
 
     }
-    public void ModaImportados(double vector[]) {
+    public void ModaImportados(float vector[]) {
     int [] numRepetidos=new int [obtenerDatosImportados().length];  
     int contador=0;
     int mayor=0;
     int posicion = 0;
-    double Moda=-1;
+    float Moda=-1;
     int frecuenciaTemp, frecuenciaModa = 0; 
         
         for (int i=0; i < vector.length-1; i++){
@@ -281,39 +276,39 @@ public class Principal extends javax.swing.JFrame {
         rangoImportados();
     }
     public void Varianza(){
-       double suma=0;
-       double Media;
-       double sumaVarianza=0;
-       double sumaCurtosis=0;
-       double sumaSesgo=0;
-       double Sesgo=0;
-       double Curtosis=0;
-       double varianza=0;
-       double desviacionEstandar;
-       double errorTipico=0;
-       double numero=n;
-       double JB;
-       double vector[]= new double [n];
+       float suma=0;
+       float Media;
+       float sumaVarianza=0;
+       float sumaCurtosis=0;
+       float sumaSesgo=0;
+       float Sesgo=0;
+       float Curtosis=0;
+       float varianza=0;
+       float desviacionEstandar;
+       float errorTipico=0;
+       float numero=n;
+       float JB;
+       float vector[]= new float [n];
        vector=obtenerDatos();
        for(int i=0;i<obtenerDatos().length;i++){
             suma=suma+obtenerDatos()[i];
         }
        Media=suma/n;
        for(int i=0;i<obtenerDatos().length;i++){
-           sumaVarianza=sumaVarianza+Math.pow(obtenerDatos()[i]-Media,2);
+           sumaVarianza=sumaVarianza+(float)Math.pow(obtenerDatos()[i]-Media,2);
        }
        varianza=sumaVarianza/(n-1);
-       desviacionEstandar=Math.sqrt(varianza);
+       desviacionEstandar=(float)Math.sqrt(varianza);
        for(int i=0;i<obtenerDatos().length;i++){
-           sumaSesgo=sumaSesgo +Math.pow((obtenerDatos()[i]-Media)/desviacionEstandar,3);
+           sumaSesgo=sumaSesgo +(float)Math.pow((obtenerDatos()[i]-Media)/desviacionEstandar,3);
        }
        Sesgo=(numero/((numero-1)*(numero-2)))*sumaSesgo;
        for(int i=0;i<obtenerDatos().length;i++){
-           sumaCurtosis=sumaCurtosis+Math.pow((obtenerDatos()[i]-Media)/desviacionEstandar,4);
+           sumaCurtosis=sumaCurtosis+(float)Math.pow((obtenerDatos()[i]-Media)/desviacionEstandar,4);
        }
-       Curtosis=(((numero*(numero+1))/((numero-1)*(numero-2)*(numero-3)))*sumaCurtosis)-((3*Math.pow(numero-1,2))/((numero-2)*(numero-3)));
-       errorTipico=desviacionEstandar/Math.sqrt(n);
-       JB=numero*((Math.pow(Sesgo, 2)/6)+((Math.pow(Curtosis, 2))/24));
+       Curtosis=(((numero*(numero+1))/((numero-1)*(numero-2)*(numero-3)))*sumaCurtosis)-((3*(float)Math.pow(numero-1,2))/((numero-2)*(numero-3)));
+       errorTipico=desviacionEstandar/(float)Math.sqrt(n);
+       JB=numero*(((float)Math.pow(Sesgo, 2)/6)+(((float)Math.pow(Curtosis, 2))/24));
        txtError.setText(String.valueOf(errorTipico));
        txtMedia.setText(String.valueOf(Media));
        txtCurtosis.setText(String.valueOf(Curtosis));
@@ -324,40 +319,40 @@ public class Principal extends javax.swing.JFrame {
        txtCuenta.setText(String.valueOf(numero));
        txtPruebJB.setText(String.valueOf(JB));
     }
-public void VarianzaImportados(){
-       double suma=0;
-       double Media;
-       double sumaVarianza=0;
-       double sumaCurtosis=0;
-       double sumaSesgo=0;
-       double Sesgo=0;
-       double Curtosis=0;
-       double varianza=0;
-       double desviacionEstandar;
-       double errorTipico=0;
-       double numero=obtenerDatosImportados().length;
-       double JB;
-       double vector[]= new double [obtenerDatosImportados().length];
+    public void VarianzaImportados(){
+       float suma=0;
+       float Media;
+       float sumaVarianza=0;
+       float sumaCurtosis=0;
+       float sumaSesgo=0;
+       float Sesgo=0;
+       float Curtosis=0;
+       float varianza=0;
+       float desviacionEstandar;
+       float errorTipico=0;
+       float numero=obtenerDatosImportados().length;
+       float JB;
+       float vector[]= new float [obtenerDatosImportados().length];
        vector=obtenerDatosImportados();
        for(int i=0;i<obtenerDatosImportados().length;i++){
             suma=suma+obtenerDatosImportados()[i];
         }
        Media=suma/numero;
        for(int i=0;i<obtenerDatosImportados().length;i++){
-           sumaVarianza=sumaVarianza+Math.pow(obtenerDatosImportados()[i]-Media,2);
+           sumaVarianza=sumaVarianza+(float)Math.pow(obtenerDatosImportados()[i]-Media,2);
        }
        varianza=sumaVarianza/(numero-1);
-       desviacionEstandar=Math.sqrt(varianza);
+       desviacionEstandar=(float)Math.sqrt(varianza);
        for(int i=0;i<obtenerDatosImportados().length;i++){
-           sumaSesgo=sumaSesgo +Math.pow((obtenerDatosImportados()[i]-Media)/desviacionEstandar,3);
+           sumaSesgo=sumaSesgo +(float)Math.pow((obtenerDatosImportados()[i]-Media)/desviacionEstandar,3);
        }
        Sesgo=(numero/((numero-1)*(numero-2)))*sumaSesgo;
        for(int i=0;i<obtenerDatosImportados().length;i++){
-           sumaCurtosis=sumaCurtosis+Math.pow((obtenerDatosImportados()[i]-Media)/desviacionEstandar,4);
+           sumaCurtosis=sumaCurtosis+(float)Math.pow((obtenerDatosImportados()[i]-Media)/desviacionEstandar,4);
        }
-       Curtosis=(((numero*(numero+1))/((numero-1)*(numero-2)*(numero-3)))*sumaCurtosis)-((3*Math.pow(numero-1,2))/((numero-2)*(numero-3)));
-       errorTipico=desviacionEstandar/Math.sqrt(numero);
-       JB=numero*((Math.pow(Sesgo, 2)/6)+((Math.pow(Curtosis, 2))/24));
+       Curtosis=(((numero*(numero+1))/((numero-1)*(numero-2)*(numero-3)))*sumaCurtosis)-((3*(float)Math.pow(numero-1,2))/((numero-2)*(numero-3)));
+       errorTipico=desviacionEstandar/(float)Math.sqrt(numero);
+       JB=numero*(((float)Math.pow(Sesgo, 2)/6)+(((float)Math.pow(Curtosis, 2))/24));
        txtError.setText(String.valueOf(errorTipico));
        txtMedia.setText(String.valueOf(Media));
        txtCurtosis.setText(String.valueOf(Curtosis));
@@ -369,12 +364,12 @@ public void VarianzaImportados(){
        txtPruebJB.setText(String.valueOf(JB));
     }
     public void rango(){
-    double mayor=0;
-    double menor=99999;
-    double rango=0;
-    double maximo;
-    double minimo;
-    double vector[]= new double [n];
+    float mayor=0;
+    float menor=99999;
+    float rango=0;
+    float maximo;
+    float minimo;
+    float vector[]= new float [n];
     vector=obtenerDatos();    
             for(int j=0;j<vector.length;j++) {
                     if (vector[j]>mayor) {
@@ -393,12 +388,12 @@ public void VarianzaImportados(){
         txtMax.setText(String.valueOf(maximo));
     }
     public void rangoImportados(){
-    double mayor=0;
-    double menor=99999;
-    double rango=0;
-    double maximo;
-    double minimo;
-    double vector[]= new double [obtenerDatosImportados().length];
+    float mayor=0;
+    float menor=99999;
+    float rango=0;
+    float maximo;
+    float minimo;
+    float vector[]= new float [obtenerDatosImportados().length];
     vector=obtenerDatosImportados();    
             for(int j=0;j<vector.length;j++) {
                     if (vector[j]>mayor) {
@@ -477,7 +472,7 @@ public void VarianzaImportados(){
         double camb[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
         double nuevalor[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
         paso=1/Float.valueOf(txtNumeroIteraciones.getText());
-        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1,1)));
+        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(n-1,1)));
         ten=Float.valueOf(String.valueOf(txtMedia.getText()));
         vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
         txtTendencia.setText(String.valueOf(ten));
@@ -513,8 +508,7 @@ public void VarianzaImportados(){
         double nuevalor[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
         double z1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
         paso=1/Float.valueOf(txtNumeroIteraciones.getText());
-        double paso1=1/Double.valueOf(txtNumeroIteraciones.getText());
-        System.out.println("paso "+ paso + " paso1 "+paso1 + " n "+txtNumeroIteraciones.getText());
+        double paso1=1/Double.valueOf(txtNumeroIteraciones.getText());        
         precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1, fila)));
         ten=Float.valueOf(String.valueOf(txtMedia.getText()));
         vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
@@ -541,9 +535,7 @@ public void VarianzaImportados(){
                 weiner.addRow(registros);
                 fila++;
             }
-            tblTrayectorias.setModel(weiner);
-            GraficoWiener gw=new GraficoWiener();
-            gw.setVisible(true);
+            tblTrayectorias.setModel(weiner);         
     }    
     /**
      * This method is called from within the constructor to initialize the form.
@@ -608,6 +600,7 @@ public void VarianzaImportados(){
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblTrayectorias = new javax.swing.JTable();
+        btnGraficoWiener = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -889,7 +882,7 @@ public void VarianzaImportados(){
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -931,6 +924,13 @@ public void VarianzaImportados(){
         ));
         jScrollPane2.setViewportView(tblTrayectorias);
 
+        btnGraficoWiener.setText("Graficar");
+        btnGraficoWiener.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGraficoWienerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -950,7 +950,8 @@ public void VarianzaImportados(){
                             .addComponent(txtVolatilidad)
                             .addComponent(txtIteraciones)
                             .addComponent(txtPaso))
-                        .addGap(0, 105, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                        .addComponent(btnGraficoWiener))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -964,7 +965,8 @@ public void VarianzaImportados(){
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtVolatilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtVolatilidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGraficoWiener))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -974,7 +976,7 @@ public void VarianzaImportados(){
                     .addComponent(jLabel6)
                     .addComponent(txtPaso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1097,6 +1099,12 @@ public void VarianzaImportados(){
         // TODO add your handling code here:
     }//GEN-LAST:event_txtErrorActionPerformed
 
+    private void btnGraficoWienerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoWienerActionPerformed
+        // TODO add your handling code here:
+        GraficoWiener g=new GraficoWiener();
+        g.setVisible(true);
+    }//GEN-LAST:event_btnGraficoWienerActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1135,6 +1143,7 @@ public void VarianzaImportados(){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCalcular;
+    private javax.swing.JButton btnGraficoWiener;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
