@@ -13,6 +13,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import jxl.*;
 import jxl.read.biff.BiffException;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -26,7 +30,9 @@ public class Principal extends javax.swing.JFrame {
     DefaultListModel lista;    
     double z[]= new double [n];
     public static XYSeriesCollection collection =new XYSeriesCollection();    
-    XYSeries vec[]= new XYSeries[10];
+    XYSeries vec[]= new XYSeries[100];
+    ChartPanel panel;
+    JFreeChart chart = null;
     
     /**
      * Creates new form Principal
@@ -561,6 +567,42 @@ public class Principal extends javax.swing.JFrame {
             collection.addSeries(vec[p]);
         }        
     }
+    public void Grafica() {
+        int validar = 1;
+
+        XYSplineRenderer renderer = new XYSplineRenderer();
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        org.jfree.chart.axis.ValueAxis x = new org.jfree.chart.axis.NumberAxis();
+        org.jfree.chart.axis.ValueAxis y = new org.jfree.chart.axis.NumberAxis();
+
+        XYSeries serie = new XYSeries("Linea");
+        XYPlot plot;
+        pnlGraficaCaminata.removeAll();
+
+        try {
+            for (int i = 0; i < n; i++) {
+                serie.add(Float.parseFloat(String.valueOf(jtbCaminata.getValueAt(i, 0))),
+                        Float.parseFloat(String.valueOf(jtbCaminata.getValueAt(i, 1))));
+            }
+        } catch (Exception ex) {
+            validar = 0;
+        }
+        if (validar == 1) {
+            dataset.addSeries(serie);
+            x.setLabel("Eje X");
+            y.setLabel("Eje Y");
+            plot = new XYPlot(dataset, x, y, renderer);
+            chart = new JFreeChart(plot);
+            chart.setTitle("Caminata Aleatoria");
+        } else {
+            JOptionPane.showMessageDialog(null, "Llenar la tabla");
+        }
+        panel = new ChartPanel(chart);
+        panel.setBounds(5, 10, 720, 500);
+        pnlGraficaCaminata.add(panel);
+        pnlGraficaCaminata.repaint();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -575,6 +617,9 @@ public class Principal extends javax.swing.JFrame {
         txtNumeroDatos = new javax.swing.JTextField();
         btnAceptar = new javax.swing.JButton();
         txtCancelar = new javax.swing.JButton();
+        Caminata = new javax.swing.JDialog();
+        lypCapa = new javax.swing.JLayeredPane();
+        pnlGraficaCaminata = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDatos = new javax.swing.JTable();
@@ -582,6 +627,7 @@ public class Principal extends javax.swing.JFrame {
         txtNumeroIteraciones = new javax.swing.JTextField();
         btnCalcular = new javax.swing.JButton();
         btnCalcularImpor = new javax.swing.JButton();
+        btnCaminata = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         txtMedia = new javax.swing.JTextField();
         txtError = new javax.swing.JTextField();
@@ -686,6 +732,56 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
+        lypCapa.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        pnlGraficaCaminata.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        javax.swing.GroupLayout pnlGraficaCaminataLayout = new javax.swing.GroupLayout(pnlGraficaCaminata);
+        pnlGraficaCaminata.setLayout(pnlGraficaCaminataLayout);
+        pnlGraficaCaminataLayout.setHorizontalGroup(
+            pnlGraficaCaminataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 724, Short.MAX_VALUE)
+        );
+        pnlGraficaCaminataLayout.setVerticalGroup(
+            pnlGraficaCaminataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 392, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout lypCapaLayout = new javax.swing.GroupLayout(lypCapa);
+        lypCapa.setLayout(lypCapaLayout);
+        lypCapaLayout.setHorizontalGroup(
+            lypCapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lypCapaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlGraficaCaminata, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        lypCapaLayout.setVerticalGroup(
+            lypCapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lypCapaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlGraficaCaminata, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        lypCapa.setLayer(pnlGraficaCaminata, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout CaminataLayout = new javax.swing.GroupLayout(Caminata.getContentPane());
+        Caminata.getContentPane().setLayout(CaminataLayout);
+        CaminataLayout.setHorizontalGroup(
+            CaminataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CaminataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lypCapa)
+                .addContainerGap())
+        );
+        CaminataLayout.setVerticalGroup(
+            CaminataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CaminataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lypCapa)
+                .addContainerGap())
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "DATOS"));
@@ -725,6 +821,13 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        btnCaminata.setText("Caminata");
+        btnCaminata.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCaminataActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -734,17 +837,19 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCalcular)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCalcularImpor, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnCalcular)
+                        .addComponent(jLabel2)
+                        .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCalcularImpor, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(btnCaminata, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -753,6 +858,8 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(btnCalcular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCalcularImpor)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCaminata)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -917,7 +1024,7 @@ public class Principal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -1142,6 +1249,15 @@ public class Principal extends javax.swing.JFrame {
         verificarIteracionesImportados();
     }//GEN-LAST:event_btnCalcularImporActionPerformed
 
+    private void btnCaminataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCaminataActionPerformed
+        // TODO add your handling code here:
+        pnlGraficaCaminata.setVisible(true);
+        lypCapa.setLayer(pnlGraficaCaminata, 0, 0);
+        Caminata.setBounds(100, 100, 1030, 680);
+        Caminata.setVisible(true);
+        Grafica();
+    }//GEN-LAST:event_btnCaminataActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1178,9 +1294,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog Caminata;
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCalcular;
     private javax.swing.JButton btnCalcularImpor;
+    private javax.swing.JButton btnCaminata;
     private javax.swing.JButton btnGraficoWiener;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
@@ -1216,6 +1334,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jtbCaminata;
+    private javax.swing.JLayeredPane lypCapa;
+    private javax.swing.JPanel pnlGraficaCaminata;
     private javax.swing.JTable tblDatos;
     private javax.swing.JTable tblTrayectorias;
     private javax.swing.JButton txtCancelar;
