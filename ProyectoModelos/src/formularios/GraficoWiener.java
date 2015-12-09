@@ -27,6 +27,7 @@ public class GraficoWiener extends javax.swing.JFrame {
         initComponents();
         graficoGeneral();
         setLocationRelativeTo(null);
+        setExtendedState(MAXIMIZED_BOTH);
     }
      public void graficoGeneral(){
         ChartPanel panel;
@@ -39,7 +40,7 @@ public class GraficoWiener extends javax.swing.JFrame {
         plot.add(subplot1);
         chart = new JFreeChart(plot);
         panel =new ChartPanel(chart);
-        panel.setBounds(5, 10, 390 , 290);
+        panel.setBounds(5, 10, 1000 , 600);        
         wiener.add(panel);
         wiener.repaint();
     }
