@@ -222,7 +222,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
               <Component id="jPanel3" max="32767" attributes="0"/>
@@ -268,7 +268,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="123" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="179" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="btnCalcular" min="-2" max="-2" attributes="0"/>
@@ -391,7 +391,7 @@
                       <Component id="txtCurtosis" alignment="0" max="32767" attributes="0"/>
                       <Component id="txtSesgo" alignment="0" max="32767" attributes="0"/>
                       <Component id="txtRango" alignment="0" max="32767" attributes="0"/>
-                      <Component id="txtMin" alignment="0" pref="109" max="32767" attributes="0"/>
+                      <Component id="txtMin" alignment="0" pref="57" max="32767" attributes="0"/>
                       <Component id="txtMax" alignment="0" max="32767" attributes="0"/>
                       <Component id="txtSuma" max="32767" attributes="0"/>
                       <Component id="txtCuenta" alignment="0" max="32767" attributes="0"/>
