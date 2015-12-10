@@ -10,8 +10,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYDataset;
 
 /**
@@ -33,10 +32,10 @@ public class GraficoWiener extends javax.swing.JFrame {
         ChartPanel panel;
         JFreeChart chart;
         XYDataset data1 = Principal.collection;
-        XYItemRenderer renderer1 = new StandardXYItemRenderer();
+        XYSplineRenderer renderer1 = new XYSplineRenderer();
         NumberAxis rangeAxis1 = new NumberAxis("Datos");
         XYPlot subplot1 = new XYPlot(data1, null, rangeAxis1, renderer1);
-        CombinedDomainXYPlot plot = new CombinedDomainXYPlot(new NumberAxis("Domain"));
+        CombinedDomainXYPlot plot = new CombinedDomainXYPlot(new NumberAxis("Iteracion"));
         plot.add(subplot1);
         chart = new JFreeChart(plot);
         panel =new ChartPanel(chart);

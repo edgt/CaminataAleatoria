@@ -27,9 +27,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class Principal extends javax.swing.JFrame {
     int n,it,l=0;//n: numero de datos, it:numero de iteraciones(numero de numeros aleatorios)
     DefaultTableModel modelo,weiner,caminata;
-    DefaultListModel lista;    
-    double z[]= new double [n];
-    public static XYSeriesCollection collection =new XYSeriesCollection();    
+    DefaultListModel lista;
+    static XYSeriesCollection collection =new XYSeriesCollection();    
     XYSeries vec[]= new XYSeries[100];
     ChartPanel panel;
     JFreeChart chart = null;
@@ -43,9 +42,7 @@ public class Principal extends javax.swing.JFrame {
         jPanel2.setVisible(false);
         jPanel3.setVisible(false);
         jPanel4.setVisible(false);
-        setExtendedState(MAXIMIZED_BOTH);
-        btnCalcular.setVisible(false);
-        btnCalcularImpor.setVisible(false);
+        setExtendedState(MAXIMIZED_BOTH);        
     }
     public void quitarFocoDatos(){
         if(tblDatos.isEditing())
@@ -61,8 +58,7 @@ public class Principal extends javax.swing.JFrame {
             }else{
                 inicio();
                 jDialog1.dispose();
-                txtNumeroDatos.setText("");
-                btnCalcular.setVisible(true);
+                txtNumeroDatos.setText("");                
             }
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(null,"EL CAMPO: NÚMERO DE DATOS ESTÁ VACÍO O "
@@ -80,8 +76,7 @@ public class Principal extends javax.swing.JFrame {
                 txtNumeroIteraciones.requestFocus();
             }else{
                 habilitarPaneles();
-                EstadisticaDescriptiva();
-                caminataAleatoria();
+                EstadisticaDescriptiva();                
                 procesosWiener();
             }
         }catch(NumberFormatException ex){
@@ -90,27 +85,7 @@ public class Principal extends javax.swing.JFrame {
             txtNumeroIteraciones.setText("");
             txtNumeroIteraciones.requestFocus();            
         }
-    }
-    public void verificarIteracionesImportados(){
-       try{
-            it=Integer.valueOf(txtNumeroIteraciones.getText());
-            if(it==0){
-                JOptionPane.showMessageDialog(null,"INGRESE UN VALOR DIFERENTE DE CERO","ADVERTENCIA",JOptionPane.WARNING_MESSAGE);
-                txtNumeroIteraciones.setText("");
-                txtNumeroIteraciones.requestFocus();
-            }else{
-                habilitarPaneles();
-                EstadisticaDescriptivaImportados();
-                caminataAleatoriaImportados();
-                procesosWienerImportados();
-            }
-        }catch(NumberFormatException ex){
-            JOptionPane.showMessageDialog(null,"EL CAMPO: NÚMERO DE ITERACIONES ESTÁ VACÍO O "
-                    + "\nEL VALOR INTRODUCIDO NO ES UN NÚMERO VÁLIDO","ERROR",JOptionPane.ERROR_MESSAGE);
-            txtNumeroIteraciones.setText("");
-            txtNumeroIteraciones.requestFocus();            
-        }
-    }
+    }   
     public void inicio(){
         String [] titulos={"Nº","Dato"};
         modelo=new DefaultTableModel(null,titulos);
@@ -141,7 +116,6 @@ public class Principal extends javax.swing.JFrame {
         if(examinar.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
             archivo=examinar.getSelectedFile().getAbsoluteFile();
             modelo=new DefaultTableModel();
-            btnCalcularImpor.setVisible(true);
         tblDatos.setModel(modelo);
             try {
                 Workbook leer=Workbook.getWorkbook(archivo);
@@ -174,23 +148,15 @@ public class Principal extends javax.swing.JFrame {
         jPanel3.setVisible(true);
         jPanel4.setVisible(true);
     }
-
     public float[] obtenerDatos(){
         float[]reg=new float[n];
         for(int i=0;i<n;i++){
-            reg[i]=Float.parseFloat((String) tblDatos.getValueAt(i,1));
-        }
-        return reg;   
-    }    
-    public float[] obtenerDatosImportados(){
-        float []reg=new float[tblDatos.getRowCount()];
-        for(int i=0;i<tblDatos.getRowCount();i++){
-            reg[i]=Float.valueOf((String) tblDatos.getValueAt(i,1));
+            reg[i]=Float.valueOf(String.valueOf(tblDatos.getValueAt(i,1)));
         }
         return reg;
-    } 
+    }    
     public void Mediana(float vector[]) {
-        float valor,Mediana,datos;
+        float valor,Mediana;
         for(int i=1;i<obtenerDatos().length;i++) {
             for(int j=0;j<(obtenerDatos().length)-1;j++) {
                 if (vector[j]>vector[j+1]) {
@@ -200,8 +166,7 @@ public class Principal extends javax.swing.JFrame {
                     vector[j+1]=aux;
                 }
             }
-        }
-        int numDatos=n-1;
+        }        
         if(n%2==0){
             valor=(vector[(vector.length/2)-1]+vector[(vector.length/2)])/2;
         }
@@ -210,37 +175,14 @@ public class Principal extends javax.swing.JFrame {
         }
         Mediana=valor;
         txtMediana.setText(String.valueOf(Mediana));
-    }
-    public void MedianaImportados(float vector[]) {
-        float valor,Mediana,datos;
-        datos=obtenerDatosImportados().length;
-        for(int i=1;i<obtenerDatosImportados().length;i++) {
-            for(int j=0;j<(obtenerDatosImportados().length)-1;j++) {
-                if (vector[j]>vector[j+1]) {
-                    float aux;
-                    aux=vector[j];
-                    vector[j]=vector[j+1];
-                    vector[j+1]=aux;
-                }
-            }
-        }
-        if(datos%2==0){
-            valor=(vector[(vector.length/2)-1]+vector[(vector.length/2)])/2;
-        }
-        else{
-            valor=vector[(vector.length-1)/2];
-        }
-        Mediana=valor;
-        txtMediana.setText(String.valueOf(Mediana));
-    }
+    }    
     public void Moda(float vector[]) {
     int [] numRepetidos=new int [n];  
     int contador=0;
     int mayor=0;
     int posicion = 0;
     float Moda=-1;
-    int frecuenciaTemp, frecuenciaModa = 0; 
-        
+    int frecuenciaTemp, frecuenciaModa = 0;         
         for (int i=0; i < vector.length-1; i++){
             frecuenciaTemp = 1;
             for(int j = i+1 ; j< vector.length; j++){
@@ -253,42 +195,13 @@ public class Principal extends javax.swing.JFrame {
             }
         }
         txtModa.setText(String.valueOf(Moda));
-
-    }
-    public void ModaImportados(float vector[]) {
-    int [] numRepetidos=new int [obtenerDatosImportados().length];  
-    int contador=0;
-    int mayor=0;
-    int posicion = 0;
-    float Moda=-1;
-    int frecuenciaTemp, frecuenciaModa = 0; 
-        
-        for (int i=0; i < vector.length-1; i++){
-            frecuenciaTemp = 1;
-            for(int j = i+1 ; j< vector.length; j++){
-                if(vector[i] == vector[j])
-                    frecuenciaTemp ++;                
-            }
-            if(frecuenciaTemp > frecuenciaModa){
-                frecuenciaModa = frecuenciaTemp;
-                Moda = vector[i];
-            }
-        }
-        txtModa.setText(String.valueOf(Moda));
-
-    }
+    }    
     public void EstadisticaDescriptiva(){
-        MedianaImportados(obtenerDatos());
-        VarianzaImportados();
-        ModaImportados(obtenerDatos());
+        Mediana(obtenerDatos());
+        Varianza();
+        Moda(obtenerDatos());
         rango();
-    }
-    public void EstadisticaDescriptivaImportados(){
-        MedianaImportados(obtenerDatosImportados());
-        VarianzaImportados();
-        ModaImportados(obtenerDatosImportados());
-        rangoImportados();
-    }
+    }    
     public void Varianza(){
        float suma=0;
        float Media;
@@ -332,116 +245,46 @@ public class Principal extends javax.swing.JFrame {
        txtSuma.setText(String.valueOf(suma));
        txtCuenta.setText(String.valueOf(numero));
        txtPruebJB.setText(String.valueOf(JB));
-    }
-    public void VarianzaImportados(){
-       float suma=0;
-       float Media;
-       float sumaVarianza=0;
-       float sumaCurtosis=0;
-       float sumaSesgo=0;
-       float Sesgo=0;
-       float Curtosis=0;
-       float varianza=0;
-       float desviacionEstandar;
-       float errorTipico=0;
-       float numero=obtenerDatosImportados().length;
-       float JB;
-       float vector[]= new float [obtenerDatosImportados().length];
-       vector=obtenerDatosImportados();
-       for(int i=0;i<obtenerDatosImportados().length;i++){
-            suma=suma+obtenerDatosImportados()[i];
-        }
-       Media=suma/numero;
-       for(int i=0;i<obtenerDatosImportados().length;i++){
-           sumaVarianza=sumaVarianza+(float)Math.pow(obtenerDatosImportados()[i]-Media,2);
-       }
-       varianza=sumaVarianza/(numero-1);
-       desviacionEstandar=(float)Math.sqrt(varianza);
-       for(int i=0;i<obtenerDatosImportados().length;i++){
-           sumaSesgo=sumaSesgo +(float)Math.pow((obtenerDatosImportados()[i]-Media)/desviacionEstandar,3);
-       }
-       Sesgo=(numero/((numero-1)*(numero-2)))*sumaSesgo;
-       for(int i=0;i<obtenerDatosImportados().length;i++){
-           sumaCurtosis=sumaCurtosis+(float)Math.pow((obtenerDatosImportados()[i]-Media)/desviacionEstandar,4);
-       }
-       Curtosis=(((numero*(numero+1))/((numero-1)*(numero-2)*(numero-3)))*sumaCurtosis)-((3*(float)Math.pow(numero-1,2))/((numero-2)*(numero-3)));
-       errorTipico=desviacionEstandar/(float)Math.sqrt(numero);
-       JB=numero*(((float)Math.pow(Sesgo, 2)/6)+(((float)Math.pow(Curtosis, 2))/24));
-       txtError.setText(String.valueOf(errorTipico));
-       txtMedia.setText(String.valueOf(Media));
-       txtCurtosis.setText(String.valueOf(Curtosis));
-       txtSesgo.setText(String.valueOf(Sesgo));
-       txtVarianza.setText(String.valueOf(varianza));
-       txtDEsviacion.setText(String.valueOf(desviacionEstandar));
-       txtSuma.setText(String.valueOf(suma));
-       txtCuenta.setText(String.valueOf(numero));
-       txtPruebJB.setText(String.valueOf(JB));
-    }
+    }    
     public void rango(){
-    float mayor=0;
-    float menor=99999;
-    float rango=0;
-    float maximo;
-    float minimo;
-    float vector[]= new float [n];
-    vector=obtenerDatos();    
-            for(int j=0;j<vector.length;j++) {
-                    if (vector[j]>mayor) {
-                        mayor=vector[j];
-                    }
-                    if (vector[j]<menor) {
-                        menor=vector[j];
-                    }
-                          
-        }  
-        rango=mayor-menor;
-        maximo=mayor;
-        minimo=menor;
-        txtRango.setText(String.valueOf(rango));
-        txtMin.setText(String.valueOf(minimo));
-        txtMax.setText(String.valueOf(maximo));
-    }
-    public void rangoImportados(){
-    float mayor=0;
-    float menor=99999;
-    float rango=0;
-    float maximo;
-    float minimo;
-    float vector[]= new float [obtenerDatosImportados().length];
-    vector=obtenerDatosImportados();    
-            for(int j=0;j<vector.length;j++) {
-                    if (vector[j]>mayor) {
-                        mayor=vector[j];
-                    }
-                    if (vector[j]<menor) {
-                        menor=vector[j];
-                    }
-                          
-        }  
-        rango=mayor-menor;
-        maximo=mayor;
-        minimo=menor;
-        txtRango.setText(String.valueOf(rango));
-        txtMin.setText(String.valueOf(minimo));
-        txtMax.setText(String.valueOf(maximo));
-    }
-    public void caminataAleatoria(){
-        double r1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        double r2[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];        
-        double x[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        double z[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        int fila=0;
-        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
-            r1[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
-            r2[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
-            z[i]=(double) Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
-            x[i]=(double) Math.rint((10+112*z[i])*10000)/10000;
+        float tmp;
+        float rango;
+        float maximo;
+        float minimo;
+        float vector[]= new float [n];
+        vector=obtenerDatos();
+        for(int i=0;i<vector.length-1;i++){
+            for(int j=0;j<vector.length-1;j++){
+                if (vector[j]<vector[j+1]){
+                    tmp=vector[j+1];
+                    vector[j+1]=vector[j];
+                    vector[j] = tmp;
+                }
+            }
         }
-        
+        rango=vector[0]-vector[vector.length-1];
+        maximo=vector[0];
+        minimo=vector[vector.length-1];
+        txtRango.setText(String.valueOf(rango));
+        txtMin.setText(String.valueOf(minimo));
+        txtMax.setText(String.valueOf(maximo));
+    }    
+    public double[] caminataAleatoria(){        
+        double r1[]= new double [it];
+        double r2[]= new double [it];
+        double x[]= new double [it];
+        double z[]= new double [it];
+        int fila=0;
+        for(int i=0;i<it;i++){
+            r1[i] = Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
+            r2[i] = Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
+            z[i]=Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
+            x[i]=Math.rint((10+112*z[i])*10000)/10000;
+        }
         String []titulos={"#","R1","R2","Z","X"};
         String [] registros=new String [5];
         caminata = new DefaultTableModel(null,titulos);
-        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
+        while(fila<it){
                 registros[0]=String.valueOf(fila+1);
                 registros[1]=String.valueOf(r1[fila]);
                 registros[2]=String.valueOf(r2[fila]);
@@ -451,40 +294,15 @@ public class Principal extends javax.swing.JFrame {
                 fila++;
             }
             jtbCaminata.setModel(caminata);
-    }
-    public void caminataAleatoriaImportados(){
-        double r1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        double r2[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];        
-        double x[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        double z[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        int fila=0;
-        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
-            r1[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
-            r2[i] = (double) Math.rint((Math.random()*(1-0+0)+0)*10000)/10000;
-            z[i]=(double) Math.rint(((Math.sqrt(-2*Math.log(r1[i])))*(Math.sin((2*Math.PI)*r2[i])))*10000)/10000;
-            x[i]=(double) Math.rint((10+112*z[i])*10000)/10000;
-        }
-        
-        String []titulos={"#","R1","R2","Z","X"};
-        String [] registros=new String [5];
-        caminata = new DefaultTableModel(null,titulos);
-        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
-                registros[0]=String.valueOf(fila+1);
-                registros[1]=String.valueOf(r1[fila]);
-                registros[2]=String.valueOf(r2[fila]);
-                registros[3]=String.valueOf(z[fila]);
-                registros[4]=String.valueOf(x[fila]);
-                caminata.addRow(registros);
-                fila++;
-            }
-            jtbCaminata.setModel(caminata);
+            return z;
     }
     public void procesosWiener(){
         int fila=0;
-        float paso,ten,vol,precio,cambio,nvalor;
-        double prec[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
-        double camb[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
-        double nuevalor[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
+        double z[]=caminataAleatoria();
+        float paso,ten,vol,precio,cambio,nvalor;        
+        double prec[]=new double[it];
+        double camb[]=new double[it];
+        double nuevalor[]=new double[it];
         paso=1/Float.valueOf(txtNumeroIteraciones.getText());
         precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(n-1,1)));
         ten=Float.valueOf(String.valueOf(txtMedia.getText()));
@@ -493,7 +311,7 @@ public class Principal extends javax.swing.JFrame {
         txtVolatilidad.setText(String.valueOf(vol));
         txtIteraciones.setText(String.valueOf(it));
         txtPaso.setText(String.valueOf(paso));
-        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
+        for(int i=0;i<it;i++){
             if(i==0){
                 prec[i]=precio;                
             }else{
@@ -505,45 +323,7 @@ public class Principal extends javax.swing.JFrame {
         String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
         String [] registros=new String [3];
         weiner = new DefaultTableModel(null,titulos);
-        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
-                registros[0]=String.valueOf(prec[fila]);
-                registros[1]=String.valueOf(camb[fila]);
-                registros[2]=String.valueOf(nuevalor[fila]);                
-                weiner.addRow(registros);
-                fila++;
-            }
-            tblTrayectorias.setModel(weiner);
-            graficos(nuevalor);
-    }
-    public void procesosWienerImportados(){
-        int fila=0;
-        float paso,ten,vol,precio,cambio,nvalor;
-        double prec[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
-        double camb[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
-        double nuevalor[]=new double[Integer.valueOf(txtNumeroIteraciones.getText())];
-        double z1[]= new double [Integer.valueOf(txtNumeroIteraciones.getText())];
-        paso=1/Float.valueOf(txtNumeroIteraciones.getText());
-        double paso1=1/Double.valueOf(txtNumeroIteraciones.getText());        
-        precio=Float.valueOf(String.valueOf(tblDatos.getValueAt(obtenerDatosImportados().length-1,1)));
-        ten=Float.valueOf(String.valueOf(txtMedia.getText()));
-        vol=Float.valueOf(String.valueOf(txtDEsviacion.getText()));
-        txtTendencia.setText(String.valueOf(ten));
-        txtVolatilidad.setText(String.valueOf(vol));
-        txtIteraciones.setText(String.valueOf(it));
-        txtPaso.setText(String.valueOf(paso));
-        for(int i=0;i<Integer.valueOf(txtNumeroIteraciones.getText());i++){
-            if(i==0){
-                prec[i]=precio;                
-            }else{
-                prec[i]=nuevalor[i-1];                
-            }
-            camb[i]=(prec[i]*ten*paso)+(prec[i]*vol*Math.sqrt(paso)*z1[i]);
-            nuevalor[i]=prec[i]+camb[i];            
-        }
-        String []titulos={"PRECIO","CAMBIO","NUEVO VALOR"};
-        String [] registros=new String [3];
-        weiner = new DefaultTableModel(null,titulos);
-        while(fila<Integer.valueOf(txtNumeroIteraciones.getText())){
+        while(fila<it){
                 registros[0]=String.valueOf(prec[fila]);
                 registros[1]=String.valueOf(camb[fila]);
                 registros[2]=String.valueOf(nuevalor[fila]);                
@@ -579,11 +359,9 @@ public class Principal extends javax.swing.JFrame {
         XYSeries serie = new XYSeries("Linea");
         XYPlot plot;
         pnlGraficaCaminata.removeAll();
-
         try {
-            for (int i = 0; i < n; i++) {
-                serie.add(Float.parseFloat(String.valueOf(jtbCaminata.getValueAt(i, 0))),
-                        Float.parseFloat(String.valueOf(jtbCaminata.getValueAt(i, 1))));
+            for (int i = 0; i < it; i++) {
+                serie.add(i+1,Float.valueOf(String.valueOf(jtbCaminata.getValueAt(i, 4))));
             }
         } catch (Exception ex) {
             validar = 0;
@@ -626,7 +404,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtNumeroIteraciones = new javax.swing.JTextField();
         btnCalcular = new javax.swing.JButton();
-        btnCalcularImpor = new javax.swing.JButton();
         btnCaminata = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         txtMedia = new javax.swing.JTextField();
@@ -814,13 +591,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        btnCalcularImpor.setText("Calcular");
-        btnCalcularImpor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCalcularImporActionPerformed(evt);
-            }
-        });
-
         btnCaminata.setText("Caminata");
         btnCaminata.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -837,11 +607,9 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnCalcular)
-                        .addComponent(jLabel2)
-                        .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnCalcularImpor, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(btnCalcular)
+                    .addComponent(jLabel2)
+                    .addComponent(txtNumeroIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCaminata, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -857,8 +625,6 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCalcular)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCalcularImpor)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCaminata)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -866,11 +632,31 @@ public class Principal extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "ESTADISTICA DESCRIPTIVA"));
 
-        txtError.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtErrorActionPerformed(evt);
-            }
-        });
+        txtMedia.setEditable(false);
+
+        txtError.setEditable(false);
+
+        txtMediana.setEditable(false);
+
+        txtModa.setEditable(false);
+
+        txtDEsviacion.setEditable(false);
+
+        txtVarianza.setEditable(false);
+
+        txtCurtosis.setEditable(false);
+
+        txtSesgo.setEditable(false);
+
+        txtRango.setEditable(false);
+
+        txtMin.setEditable(false);
+
+        txtMax.setEditable(false);
+
+        txtSuma.setEditable(false);
+
+        txtCuenta.setEditable(false);
 
         jLabel7.setText("Media");
 
@@ -899,6 +685,8 @@ public class Principal extends javax.swing.JFrame {
         jLabel19.setText("Cuenta");
 
         jLabel20.setText("JB");
+
+        txtPruebJB.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1233,21 +1021,11 @@ public class Principal extends javax.swing.JFrame {
         verificarIteraciones();       
     }//GEN-LAST:event_btnCalcularActionPerformed
 
-    private void txtErrorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtErrorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtErrorActionPerformed
-
     private void btnGraficoWienerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoWienerActionPerformed
         // TODO add your handling code here:
         GraficoWiener g=new GraficoWiener();
         g.setVisible(true);
     }//GEN-LAST:event_btnGraficoWienerActionPerformed
-
-    private void btnCalcularImporActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularImporActionPerformed
-        // TODO add your handling code here:
-        quitarFocoDatos();
-        verificarIteracionesImportados();
-    }//GEN-LAST:event_btnCalcularImporActionPerformed
 
     private void btnCaminataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCaminataActionPerformed
         // TODO add your handling code here:
@@ -1255,6 +1033,7 @@ public class Principal extends javax.swing.JFrame {
         lypCapa.setLayer(pnlGraficaCaminata, 0, 0);
         Caminata.setBounds(100, 100, 1030, 680);
         Caminata.setVisible(true);
+        Caminata.setLocationRelativeTo(null);
         Grafica();
     }//GEN-LAST:event_btnCaminataActionPerformed
 
@@ -1297,7 +1076,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JDialog Caminata;
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCalcular;
-    private javax.swing.JButton btnCalcularImpor;
     private javax.swing.JButton btnCaminata;
     private javax.swing.JButton btnGraficoWiener;
     private javax.swing.JDialog jDialog1;
